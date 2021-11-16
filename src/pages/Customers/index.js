@@ -6,8 +6,16 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from '@mui/icons-material/Add';
 import { Link } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
-import { onValue, ref } from '@firebase/database';
+import { onValue, ref, remove } from '@firebase/database';
 import { database } from '../../config/firebaseConfig';
+import IconButton from '@mui/material/IconButton';
+
+const deleteCustomer = (id) => {
+  remove(ref(database, `/customers/${id}`))
+  .then(()=>{
+    alert('Cliente eliminado');
+  })
+}
 
 const columns = [
   {
@@ -34,13 +42,22 @@ const columns = [
     field: 'company',
     headerName: 'Empresa',
     width: '220'
+},
+{
+  field: 'id', headerName:'Eliminar', with: 150,
+  renderCell: (data) => (
+    <IconButton onClick={()=> { deleteCustomer(data.row.id);}} color="primary" aria-label="Eliminar" component="span">
+      <DeleteIcon/>
+    </IconButton>
+  )
 }
 ];
 
 const Customers = () => {
 
     const [customers, setCustomers] = useState([]); //inicializa state "customers" con funcion setCustomers
-    useEffect(()=> {                                
+    useEffect(()=> {     
+        let isMounted = true;                           
         onValue(  
             ref(database,'/customers'),
             (snapshot)=> {
@@ -60,6 +77,9 @@ const Customers = () => {
             console.log(error);
         }
         );
+        return () => {
+          isMounted = false;
+        };
     }, []);
     return (
     <Paper
