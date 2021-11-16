@@ -3,6 +3,7 @@ import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from '@mui/icons-material/Add';
 import { Link } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import { onValue, ref } from '@firebase/database';
@@ -76,7 +77,7 @@ const Customers = () => {
             variant="outlined"
             LinkComponent={Link}
             to="/clientes/agregar"
-            startIcon={<DeleteIcon />}
+            startIcon={<AddIcon />}
           >
             Agregar
           </Button>
