@@ -4,8 +4,11 @@ import Button from  '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import SaveIcon from '@mui/icons-material/Save';
 import { useState } from 'react';
+import { ref, push } from '@firebase/database';
+import { withRouter } from 'react-router';
+import { database } from '../../config/firebaseConfig';
 
-const CustomerForm = () => {
+const CustomerForm = (props) => {
     const [customer, setCustomer] = useState({
         name:'',
         lastname:'',
@@ -20,9 +23,16 @@ const CustomerForm = () => {
             [e.target.name]: e.target.value, //extrae name de cuadro de texto y luego su value
         });
     }
-    const handleSubmit = (e) => {
+    const handleSubmit = (e) => { //se engarga de hacer el submit de los datos
         e.preventDefault();
-        console.log('Guardar');
+        push(ref(database,'/customers'), customer)
+        .then(()=>{
+            //redireccionar a /clientes una vez cargado el cliente
+            props.history.push('/clientes'); 
+        })
+        .catch((error)=>{
+            console.log(error);
+        })
     }
 
     return (
@@ -98,4 +108,4 @@ const CustomerForm = () => {
     )
 }
 
-export default CustomerForm;
+export default withRouter(CustomerForm);
