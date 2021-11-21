@@ -57,7 +57,8 @@ const Customers = () => {
 
     const [customers, setCustomers] = useState([]); //inicializa state "customers" con funcion setCustomers
     useEffect(()=> {     
-        let isMounted = true;                           
+        let isMounted = true; 
+        if(isMounted) {        //verif. si if va dentro de onValue                  
         onValue(  
             ref(database,'/customers'),
             (snapshot)=> {
@@ -77,7 +78,9 @@ const Customers = () => {
             console.log(error);
         }
         );
+        }
         return () => {
+          
           isMounted = false;
         };
     }, []);

@@ -55,7 +55,7 @@ const ProductForm = (props) => {
             const imageName = `img_${Date.now()}.${image.type}` //nombre de img tipo img_84344.jpg
             const imageRef = storageRef(storage, `/products/${imageName}`);
             uploadBytes( //funcion para cargar el archivo
-                storageRef(storage, imageRef), //generamos nueva ref
+                storageRef(imageRef), //generamos nueva ref. Antes (storage, imageRef)
                 image.file //pasamos el valor/archivo
             )
             .then(()=>{ //una vez que obtenemos respuesta positiva
@@ -74,7 +74,7 @@ const ProductForm = (props) => {
                 })
             })
             .catch((error)=>{
-                console.log('Error de firebase', error);
+                console.log(`Error firebase url ${imageRef}`, error);
             })
         }
     }
