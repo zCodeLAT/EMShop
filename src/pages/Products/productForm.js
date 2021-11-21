@@ -6,8 +6,10 @@ import SaveIcon from '@mui/icons-material/Save';
 import { useState } from 'react';
 import { ref, push } from '@firebase/database';
 import { withRouter } from 'react-router';
-import { database } from '../../config/firebaseConfig';
+import { database, storage } from '../../config/firebaseConfig';
 import { Input } from '@mui/material';
+import { ref as storageRef, uploadBytes, getDownloadURL} from 'firebase/storage';
+import { SaveSharp } from '@mui/icons-material';
 
 const ProductForm = (props) => {
     const [product, setProduct] = useState({
@@ -37,8 +39,42 @@ const ProductForm = (props) => {
         })
     }
 
-    const handleSubmit = () => {
-        console.log('guardar');
+    const saveProduct = (item) => {
+        push(ref(database, '/products'), item)
+        .then(()=>{
+            props.history.push('/productos');
+        })
+        .catch((error)=>{
+            console.log(error);
+        });
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault(); //evitamos q el form se envie
+
+        if (image) { //validamos si hay img selected
+            const imageName = `img_${Date.now()}.${image.type}` //nombre de img tipo img_84344.jpg
+            const imageRef = storageRef(storage, `/products/${imageName}`);
+            uploadBytes( //funcion para cargar el archivo
+                storageRef(storage, imageRef), //generamos nueva ref
+                image.file //pasamos el valor/archivo
+            )
+            .then(()=>{ //una vez que obtenemos respuesta positiva
+                //guardar el producto
+                //obtener URL del archivo guardado
+                getDownloadURL(imageRef)
+                .then((url)=>{
+                    setProduct({
+                        ...product, 
+                        image:url
+                    });
+                    saveProduct({...product, image: url});
+                },
+                (error)=>{
+                    console.log(error);
+                })
+            })
+        }
     }
 
     return (
@@ -98,10 +134,12 @@ const ProductForm = (props) => {
                             type='file'
                             accept='image'
                             name='productImage'
-                            onChage={handleImage}
+                            id='productImage' //id asocia el boton "imagen de producto " al input
+                            onChage={handleImage}                   
+                            style={{width: '1px'}} //para ocultar boton por defecto
                             />
                             <label htmlFor='productImage'>
-                                <Button variant='contained' component='span'>
+                                <Button variant='contained' component='span' style={{marginLeft:'-1px'}}>
                                     Imagen de producto
                                 </Button>
                                 {/*en caso q image tenga un valor renderiza nuevo span con datos*/}
