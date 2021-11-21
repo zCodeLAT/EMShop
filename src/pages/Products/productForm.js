@@ -9,7 +9,6 @@ import { withRouter } from 'react-router';
 import { database, storage } from '../../config/firebaseConfig';
 import { Input } from '@mui/material';
 import { ref as storageRef, uploadBytes, getDownloadURL} from 'firebase/storage';
-import { SaveSharp } from '@mui/icons-material';
 
 const ProductForm = (props) => {
     const [product, setProduct] = useState({
@@ -30,7 +29,7 @@ const ProductForm = (props) => {
     }
 
     const handleImage = (e) => {
-        if(!e.target.files[0]) return; //en caso q no haya archivo seleccionado
+        if(!e.target.files[0]) return; //en caso q no haya archivo seleccionado 
 
         const file = e.target.files[0];
         setImage({ //cambiamos el estado de setImage
@@ -73,6 +72,9 @@ const ProductForm = (props) => {
                 (error)=>{
                     console.log(error);
                 })
+            })
+            .catch((error)=>{
+                console.log('Error de firebase', error);
             })
         }
     }
@@ -135,7 +137,7 @@ const ProductForm = (props) => {
                             accept='image'
                             name='productImage'
                             id='productImage' //id asocia el boton "imagen de producto " al input
-                            onChage={handleImage}                   
+                            onChange={handleImage}
                             style={{width: '1px'}} //para ocultar boton por defecto
                             />
                             <label htmlFor='productImage'>

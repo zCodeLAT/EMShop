@@ -1,13 +1,9 @@
-import React, { useEffect, useState } from "react";
+
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
-import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from '@mui/icons-material/Add';
 import { Link } from "react-router-dom";
-
-import { onValue, ref, remove } from '@firebase/database';
-import { database } from '../../config/firebaseConfig';
 
 
 const Products = () => {
