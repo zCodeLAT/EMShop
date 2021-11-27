@@ -74,7 +74,7 @@ const ProductForm = (props) => {
                 })
             })
             .catch((error)=>{
-                console.log(`Error firebase url ${imageRef}`, error);
+                console.log(error);
             })
         }
     }
