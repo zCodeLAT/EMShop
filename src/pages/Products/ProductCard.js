@@ -11,7 +11,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import { Link } from 'react-router-dom';
 
-export default function ProductCard({product}) {
+export default function ProductCard({product, onDelete}) {
   return ( 
     <Card sx={{ maxWidth: 250, m: 2, display: 'block' }}>
       <CardMedia
@@ -47,10 +47,11 @@ export default function ProductCard({product}) {
         </Grid>
       </CardContent>
       <CardActions sx={{justifyContent: 'space-between'}}>
-        <IconButton onClick={()=>{}} color="error" component="span">
+        <IconButton onClick={()=>{onDelete(product.id); }} color="error" component="span">
             <DeleteOutlineIcon/>
         </IconButton>
-        <IconButton color="primary" LinkComponent={Link} to={`/productos/editar/${product.id}`} component="span">
+        <IconButton color="primary" LinkComponent={Link} 
+            to={{ pathname: `/productos/editar`, state: {product}}}>
             <EditIcon/>
         </IconButton>     
       </CardActions>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { onValue, ref } from '@firebase/database';
+import { onValue, ref, remove } from '@firebase/database';
 import { database } from '../../config/firebaseConfig';
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
@@ -11,9 +11,18 @@ import ProductCard from "./ProductCard";
 const Products = () => {
     const [products, setProducts] = useState([]);
 
+    const handleDelete = (id)=> {
+      console.log(id);
+      remove(ref(database, `/products/${id}`))
+      .then(()=>{
+        alert('Producto eliminado');
+        renderProducts();
+      })
+    };
+    
     const renderProducts = () => {
       return products.map((item)=>(
-         <ProductCard key={item.id} product={item} />
+         <ProductCard key={item.id} product={item} onDelete={handleDelete}/>
       ))
     }
 
@@ -32,7 +41,6 @@ const Products = () => {
                   productList.push(productItem);
               });
               setProducts(productList); //setea STATE
-
           },
           (error)=> { //catch en caso de error
           console.log(error);

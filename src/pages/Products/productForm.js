@@ -3,14 +3,16 @@ import Grid from '@mui/material/Grid';
 import Button from  '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import SaveIcon from '@mui/icons-material/Save';
-import { useState } from 'react';
-import { ref, push } from '@firebase/database';
-import { withRouter } from 'react-router';
+import { useEffect, useState } from 'react';
+import { ref, push, update } from '@firebase/database';
+import { withRouter, useLocation } from 'react-router';
 import { database, storage } from '../../config/firebaseConfig';
 import { Input } from '@mui/material';
 import { ref as storageRef, uploadBytes, getDownloadURL} from 'firebase/storage';
 
 const ProductForm = (props) => {
+    const location = useLocation(); //trae la información para pasarla al Form
+
     const [product, setProduct] = useState({
         sku: '',
         description: '',
@@ -39,6 +41,18 @@ const ProductForm = (props) => {
     }
 
     const saveProduct = (item) => {
+        if (item.id) { //update
+            const data ={...item}; //exluye prop ID. 
+            delete data.id;
+            update(ref(database, `/products/${item.id}`), data)
+            .then(()=>{
+                props.history.push('/productos');
+            })
+            .catch((error)=>{
+                console.log(error);
+            });
+        } 
+        else { //create
         push(ref(database, '/products'), item)
         .then(()=>{
             props.history.push('/productos');
@@ -46,6 +60,7 @@ const ProductForm = (props) => {
         .catch((error)=>{
             console.log(error);
         });
+        }
     }
 
     const handleSubmit = (e) => {
@@ -76,8 +91,15 @@ const ProductForm = (props) => {
             .catch((error)=>{
                 console.log(`Error firebase url ${imageRef}`, error);
             })
-        }
+        } else //si producto ya existe y es editado
+            saveProduct(product);        
     }
+
+    useEffect(()=>{ //el efecto estará pendiende a cualquier cambio en la const location
+        if (location?.state?.product) { // los ? verificion si =null.
+            setProduct({ ...location.state.product }); // ""...location"" todos los datos
+        }
+    }, [location]);
 
     return (
         <Paper
@@ -150,6 +172,13 @@ const ProductForm = (props) => {
                                 </span>)}
                             </label>
                         </Grid>
+                        {product.image && (
+                            <Grid item xs={12} sx={{m:5, textAlign:'center'}}>
+                                <img alt='productImg' src={product.image}
+                                style={{height: '120px', width: 'auto', fitObject: 'center'}}
+                                />
+                            </Grid>
+                        )}
                         <Grid item xs={12} sx={{m:5, textAlign:'center'}}>
                         <Button type= 'submit' variant="contained" startIcon={<SaveIcon />}>
                         Guardar producto
