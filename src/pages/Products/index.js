@@ -1,13 +1,52 @@
-
+import React, { useEffect, useState } from "react";
+import { onValue, ref } from '@firebase/database';
+import { database } from '../../config/firebaseConfig';
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import AddIcon from '@mui/icons-material/Add';
 import { Link } from "react-router-dom";
-
+import ProductCard from "./ProductCard";
 
 const Products = () => {
-    return (
+    const [products, setProducts] = useState([]);
+
+    const renderProducts = () => {
+      return products.map((item)=>(
+         <ProductCard key={item.id} product={item} />
+      ))
+    }
+
+    useEffect(()=> {     
+      let isMounted = true; 
+      if(isMounted) {        //verif. si if va dentro de onValue                  
+      onValue(  
+          ref(database,'/products'),
+          (snapshot)=> {
+              const productList =[];
+              snapshot.forEach(item => {
+                  const productItem = {
+                      id: item.key,
+                      ...item.val()
+                  };
+                  productList.push(productItem);
+              });
+              setProducts(productList); //setea STATE
+
+          },
+          (error)=> { //catch en caso de error
+          console.log(error);
+          
+      }
+      );
+      }
+      return () => {
+        
+        isMounted = false;
+      };
+  }, []);
+
+  return (
         <Paper
           sx={{
             // prop custom style de MUI
@@ -28,12 +67,12 @@ const Products = () => {
                 Agregar
               </Button>
             </Grid>
-            <Grid item xs={12}>
-                Productos
+            <Grid item xs={12} sx={{display:'flex'}}>
+                {renderProducts()}
             </Grid>
           </Grid>
         </Paper>
       );
-}
+} 
 
 export default Products;

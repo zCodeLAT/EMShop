@@ -74,7 +74,7 @@ const ProductForm = (props) => {
                 })
             })
             .catch((error)=>{
-                console.log(error);
+                console.log(`Error firebase url ${imageRef}`, error);
             })
         }
     }
@@ -145,7 +145,7 @@ const ProductForm = (props) => {
                                     Imagen de producto
                                 </Button>
                                 {/*en caso q image tenga un valor renderiza nuevo span con datos*/}
-                                {image && (<span>
+                                {image && (<span style={{ marginLeft: 12}}>
                                     {image.file.name}
                                 </span>)}
                             </label>
