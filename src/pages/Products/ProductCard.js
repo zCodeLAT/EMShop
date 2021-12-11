@@ -13,10 +13,11 @@ import { Link } from 'react-router-dom';
 
 export default function ProductCard({product, onDelete}) {
   return ( 
-    <Card sx={{ maxWidth: 250, m: 2, display: 'block' }}>
+    <Card sx={{ minWidth: 150, maxWidth: 250, m: 2, display: 'block' }}>
       <CardMedia
         component="img"
         height="140"
+        width="100"
         image={product.image}
         alt={product.description}
         sx={{
