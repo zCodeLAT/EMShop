@@ -75,7 +75,7 @@ const Products = () => {
                 Agregar
               </Button>
             </Grid>
-            <Grid item xs={12} sx={{display:'flex'}}>
+            <Grid item xs={12} sx={{display:'flex', flexWrap: 'wrap'}}>
                 {renderProducts()}
             </Grid>
           </Grid>
